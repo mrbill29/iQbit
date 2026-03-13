@@ -17,9 +17,6 @@ import pckg from "../package.json";
 import ReactGA from "react-ga";
 import FontSizeProvider from "./components/FontSizeProvider";
 
-ReactGA.initialize("UA-60234062-3");
-ReactGA.pageview("/");
-ReactGA.set({ version: pckg.version });
 
 // 2. Extend the theme to include custom colors, fonts, etc
 export const colors = {

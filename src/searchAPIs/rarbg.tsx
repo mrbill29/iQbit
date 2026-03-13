@@ -27,12 +27,7 @@ const RarbgSearch = (props: SearchProviderComponentProps) => {
         props.category as keyof typeof RarbgCategoryDictionary
       ),
     {
-      onMutate: () =>
-        ReactGA.event({
-          action: "executed",
-          category: "search",
-          label: "rarbg",
-        }),
+      onMutate: () =>{},
       onSuccess: (data) => {
         props.onSearch && props.onSearch();
 

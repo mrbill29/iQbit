@@ -79,7 +79,6 @@ const YTSSearch = (props: SearchProviderComponentProps) => {
       }),
     {
       onMutate: () => {
-        ReactGA.event({ action: "executed", category: "search", label: "YTS" });
         navigate(`/search/${props.searchState[0]}`, { replace: true });
       },
       onSuccess: (data) => {
