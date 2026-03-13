@@ -173,6 +173,13 @@ export const TorrClient = {
     );
   },
 
+  setTorrentLocation: async (hash ="", location ="") =>{
+	return await APICall.post(
+		"torrents/setLocation",
+		`hashes=${hash}&location=${location}`
+	);
+  },
+
   renameTorrent: async (hash: string, name: string) => {
     return await APICall.post("torrents/rename", `hash=${hash}&name=${name}`);
   },

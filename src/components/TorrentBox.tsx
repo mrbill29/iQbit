@@ -92,6 +92,7 @@ const TorrentBox = ({
     | "mainBtn"
     | "category"
     | "name"
+    | "location"
     | "sequential"
     | "firstLastPriority"
     | "autoManagement"
@@ -103,6 +104,7 @@ const TorrentBox = ({
     torrentData.state,
     torrentData.category,
     torrentData.name,
+	torrentData.save_path,
     torrentData.seq_dl,
     torrentData.f_l_piece_prio,
     torrentData.auto_tmm,
@@ -146,10 +148,22 @@ const TorrentBox = ({
     }
   );
 
+  const [newLocation, setNewLocation] = useState(torrentData.save_path);
+  const locationChangeDisclosure = useDisclosure();
+  const { mutate: changeLocation, isLoading: locationLoading } = useMutation(
+    "changeLocation",
+	() => TorrClient.setTorrentLocation(hash, newLocation),
+	{
+		onMutate: ()=> setWaiting("location"),
+		onError: (e)=> setWaiting(""),
+        onSuccess: () => locationChangeDisclosure.onClose(),
+	}
+  );
+
   const [newName, setNewName] = useState(torrentData.name);
   const renameTorrentDisclosure = useDisclosure();
   const { mutate: renameTorrent, isLoading: renameLoading } = useMutation(
-    "changeCategory",
+    "renameTorrent",
     () => TorrClient.renameTorrent(hash, newName),
     {
       onMutate: () => setWaiting("name"),
@@ -330,6 +344,10 @@ const TorrentBox = ({
                   onClick: () => categoryChangeDisclosure.onOpen(),
                 },
                 {
+                  label: "Change Location",
+                  onClick: () => locationChangeDisclosure.onOpen(),
+                },
+                {
                   label: `Sequential Download`,
                   onClick: toggleSequentialDownload,
                   checked: torrentData.seq_dl,
@@ -432,6 +450,40 @@ const TorrentBox = ({
               isLoading={renameLoading}
             >
               Save New Name
+            </Button>
+          </LightMode>
+        </VStack>
+      </IosBottomSheet>
+    <IosBottomSheet
+        title={"Change Location"}
+        disclosure={locationChangeDisclosure}
+      >
+        <VStack gap={10}>
+          <FormControl>
+            <FormLabel>Change Location</FormLabel>
+            <Input
+              disabled={locationLoading}
+              value={newLocation}
+              onChange={(e) => setNewLocation(e.target.value)}
+            />
+            {newLocation !== torrentData.save_path && (
+              <FormHelperText fontSize={"sm"} textAlign={"center"}>
+                <VStack mt={7}>
+                  <span>{torrentData.save_path}</span>
+                  <IoArrowDown />
+                  <span>{newLocation}</span>
+                </VStack>
+              </FormHelperText>
+            )}
+          </FormControl>
+          <LightMode>
+            <Button
+              disabled={newLocation === torrentData.save_path}
+              w={"100%"}
+              onClick={() => changeLocation()}
+              isLoading={locationLoading}
+            >
+              Save New Location
             </Button>
           </LightMode>
         </VStack>
